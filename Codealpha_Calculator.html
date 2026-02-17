@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern Calculator</title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background:white;
+        font-family: Arial, sans-serif;
+    }
+
+    .calculator {
+        background: #222;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        width: 320px;
+    }
+
+    .display {
+        background: black;
+        color: #0f0;
+        font-size: 2em;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: right;
+        margin-bottom: 15px;
+        min-height: 60px;
+        overflow-x: auto;
+    }
+
+    .result-preview {
+        color: #aaa;
+        font-size: 0.8em;
+    }
+
+    .buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    button {
+        padding: 15px;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+    }
+
+    .operator { background: #ff9500; color: white; }
+    .number { background: #333; color: white; }
+    .equal { background: #28a745; color: white; grid-column: span 2; }
+    .clear { background: #dc3545; color: white; }
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+    <div class="display">
+        <div id="expression"></div>
+        <div class="result-preview" id="preview"></div>
+    </div>
+
+    <div class="buttons">
+        <button class="clear" onclick="clearDisplay()">C</button>
+        <button onclick="deleteLast()">⌫</button>
+        <button class="operator" onclick="append('%')">%</button>
+        <button class="operator" onclick="append('/')">/</button>
+
+        <button class="number" onclick="append('7')">7</button>
+        <button class="number" onclick="append('8')">8</button>
+        <button class="number" onclick="append('9')">9</button>
+        <button class="operator" onclick="append('*')">×</button>
+
+        <button class="number" onclick="append('4')">4</button>
+        <button class="number" onclick="append('5')">5</button>
+        <button class="number" onclick="append('6')">6</button>
+        <button class="operator" onclick="append('-')">−</button>
+
+        <button class="number" onclick="append('1')">1</button>
+        <button class="number" onclick="append('2')">2</button>
+        <button class="number" onclick="append('3')">3</button>
+        <button class="operator" onclick="append('+')">+</button>
+
+        <button class="number" onclick="append('0')">0</button>
+        <button class="number" onclick="append('.')">.</button>
+        <button class="equal" onclick="calculate()">=</button>
+    </div>
+</div>
+
+<script>
+    let expression = "";
+
+    function append(value) {
+        expression += value;
+        updateDisplay();
+    }
+
+    function clearDisplay() {
+        expression = "";
+        updateDisplay();
+    }
+
+    function deleteLast() {
+        expression = expression.slice(0, -1);
+        updateDisplay();
+    }
+
+    function calculate() {
+        try {
+            expression = eval(expression).toString();
+            updateDisplay();
+        } catch {
+            expression = "Error";
+            updateDisplay();
+        }
+    }
+
+    function updateDisplay() {
+        document.getElementById("expression").innerText = expression;
+        try {
+            document.getElementById("preview").innerText =
+                expression ? "= " + eval(expression) : "";
+        } catch {
+            document.getElementById("preview").innerText = "";
+        }
+    }
+
+    
+    document.addEventListener("keydown", function(event) {
+        if ((event.key >= 0 && event.key <= 9) || "+-*/.%".includes(event.key)) {
+            append(event.key);
+        } else if (event.key === "Enter") {
+            calculate();
+        } else if (event.key === "Backspace") {
+            deleteLast();
+        } else if (event.key === "Escape") {
+            clearDisplay();
+        }
+    });
+</script>
+
+</body>
+</html>
